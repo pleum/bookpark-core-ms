@@ -13,4 +13,9 @@ export class AppController {
       '5e4fe134d9338903a2811501',
     );
   }
+
+  @Get('healthz')
+  async healthcheck(): Promise<string> {
+    return 'healthy';
+  }
 }
