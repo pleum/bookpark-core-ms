@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.3](https://github.com/pleum/bookpark-core-ms/compare/v0.0.2...v0.0.3) (2020-03-01)
+
+
+### Bug Fixes
+
+* Add healthcheck endpoint ([f55727f](https://github.com/pleum/bookpark-core-ms/commit/f55727fd5cc3bba4099185a2870cdbd22bc4ea44))
+
 ### [0.0.2](https://github.com/pleum/bookpark-core-ms/compare/v0.0.1...v0.0.2) (2020-03-01)
 
 
