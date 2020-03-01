@@ -1,0 +1,11 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/bookpark-01/dev/core-ms', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/bookpark-01/dev/core-ms']
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    args:
+      - run
+      - --image=gcr.io/bookpark-01/dev/core-ms:latest
+      - --location=asia-southeast1-a
+      - --cluster=bp-gke-01
