@@ -30,6 +30,7 @@ import { RequestModule } from './request/request.module';
     SlotModule,
     ParkingModule,
     ActivityModule,
+    RequestModule,
   ],
 })
 export class CoreModule {}

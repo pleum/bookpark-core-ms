@@ -9,20 +9,16 @@ export const RequestSchema = new mongoose.Schema(
     },
     type: {
       type: mongoose.SchemaTypes.String,
-      enum: [
-        'NOTHING',
-        'ADD_SLOTS',
-        'CANCEL_SERVICE',
-        'EDIT_SLOT',
-        'EDIT_PARK',
-      ],
+      enum: ['OTHER', 'ADD_SLOTS', 'CANCEL_SERVICE', 'EDIT_SLOT', 'EDIT_PARK'],
+      default: 'OTHER',
     },
     message: {
       type: mongoose.SchemaTypes.String,
     },
     status: {
       type: mongoose.SchemaTypes.String,
-      enum: ['CREATED', 'APPROVED', 'REJECT'],
+      enum: ['PENDING', 'APPROVED', 'REJECT'],
+      default: 'PENDING',
     },
     attendant: {
       type: mongoose.SchemaTypes.ObjectId,

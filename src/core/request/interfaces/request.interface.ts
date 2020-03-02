@@ -1,3 +1,5 @@
+import { Document } from 'mongoose';
+
 import { Manager } from 'src/core/manager/interfaces/manager.interface';
 
 export interface Request extends Document {
