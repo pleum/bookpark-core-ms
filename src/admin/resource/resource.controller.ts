@@ -18,6 +18,7 @@ import { UserPayload } from '../auth/strategies/jwt.strategy';
 import { UpdateSlotDto } from './dto/update-slot.dto';
 import { CreateSlotDto } from './dto/create-slot.dto';
 import { UpdateParkDto } from './dto/update-park.dto';
+import { CreateRequestDto } from './dto/create-request.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('admin/resource')
@@ -177,7 +178,7 @@ export class ResourceController {
     return this.adminService.getListDriver(user, ids);
   }
 
-  // Drivers
+  // Managers
   @Get('managers')
   async getListManager(
     @Req() req: Request,
@@ -185,5 +186,52 @@ export class ResourceController {
   ): Promise<any> {
     const user = req.user as UserPayload;
     return this.adminService.getListManager(user, ids);
+  }
+
+  @Get('managers/:id')
+  async getOneManager(
+    @Req() req: Request,
+    @Param('id') id: string,
+  ): Promise<any> {
+    if (id === undefined) {
+      throw new BadRequestException();
+    }
+    const user = req.user as UserPayload;
+    return this.adminService.getOneManager(user, id);
+  }
+
+  // Requests
+  @Get('requests')
+  async getListRequest(
+    @Req() req: Request,
+    @Query('ids') ids: string,
+  ): Promise<any> {
+    const user = req.user as UserPayload;
+    return this.adminService.getListRequest(user, ids);
+  }
+
+  @Get('requests/:id')
+  async getOneRequest(
+    @Req() req: Request,
+    @Param('id') id: string,
+  ): Promise<any> {
+    if (id === undefined) {
+      throw new BadRequestException();
+    }
+    const user = req.user as UserPayload;
+    return this.adminService.getOneRequest(user, id);
+  }
+
+  @Post('requests')
+  async createRequest(
+    @Req() req: Request,
+    @Body() body: CreateRequestDto,
+  ): Promise<any> {
+    const user = req.user as UserPayload;
+    await this.adminService.createRequest(user, body);
+
+    return {
+      message: 'success',
+    };
   }
 }

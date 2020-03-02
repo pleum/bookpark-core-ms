@@ -17,14 +17,15 @@ export class LiffGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
 
-    request['user'] = {
-      userId: 'Ued83a1840d2194f3d722af0b130ee153',
-      displayName: 'Brown',
-      pictureUrl: 'https://example.com/abcdefghijklmn',
-      statusMessage: 'Hello, LINE!',
-    };
+    // // TODO: LIFF
+    // request['user'] = {
+    //   userId: 'Ued83a1840d2194f3d722af0b130ee153',
+    //   displayName: 'Brown',
+    //   pictureUrl: 'https://example.com/abcdefghijklmn',
+    //   statusMessage: 'Hello, LINE!',
+    // };
 
-    return true;
+    // return true;
 
     if (!('authorization' in request.headers)) {
       return false;
