@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/pleum/bookpark-core-ms/compare/v0.0.4...v0.0.5) (2020-03-02)
+
+
+### Features
+
+* Request admin ([738dd54](https://github.com/pleum/bookpark-core-ms/commit/738dd5466b12baa9236266e0dd6afdd33ad2743b))
+
+
+### Bug Fixes
+
+* liff authroize ([774b855](https://github.com/pleum/bookpark-core-ms/commit/774b85560b019689d3e8e36e2f188bfb7dde8c0d))
+
 ### [0.0.4](https://github.com/pleum/bookpark-core-ms/compare/v0.0.3...v0.0.4) (2020-03-02)
 
 
