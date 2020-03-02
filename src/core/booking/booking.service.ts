@@ -9,14 +9,17 @@ import { Model } from 'mongoose';
 import { Booking } from './interfaces/booking.interface';
 import { InvoiceService } from '../invoice/invoice.service';
 import { Activity } from '../activity/interfaces/activity.interface';
+import { ReactAdminCrud } from 'src/admin/react-admin-crud.service';
 
 @Injectable()
-export class BookingService {
+export class BookingService extends ReactAdminCrud<Booking> {
   constructor(
     @InjectModel('Booking') private readonly bookingModel: Model<Booking>,
     @Inject(forwardRef(() => InvoiceService))
     private readonly invoiceService: InvoiceService,
-  ) {}
+  ) {
+    super(bookingModel);
+  }
 
   async bookingWithActivity(activity: Activity): Promise<Booking> {
     const { id, park, slot, driver } = activity;

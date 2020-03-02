@@ -2,10 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Park } from './interfaces/park.interface';
+import { ReactAdminCrud } from 'src/admin/react-admin-crud.service';
 
 @Injectable()
-export class ParkService {
-  constructor(@InjectModel('Park') private readonly parkModel: Model<Park>) {}
+export class ParkService extends ReactAdminCrud<Park> {
+  constructor(@InjectModel('Park') private readonly parkModel: Model<Park>) {
+    super(parkModel);
+  }
 
   async create(
     name: string,
