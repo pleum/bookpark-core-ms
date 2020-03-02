@@ -9,6 +9,7 @@ import {
   Post,
   BadRequestException,
   Query,
+  Delete,
 } from '@nestjs/common';
 import { AdminService } from '../admin.service';
 import { Request } from 'express';
@@ -16,6 +17,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserPayload } from '../auth/strategies/jwt.strategy';
 import { UpdateSlotDto } from './dto/update-slot.dto';
 import { CreateSlotDto } from './dto/create-slot.dto';
+import { UpdateParkDto } from './dto/update-park.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('admin/resource')
@@ -27,78 +29,161 @@ export class ResourceController {
     @Req() req: Request,
     @Body() body: CreateSlotDto,
   ): Promise<any> {
-    this.adminService.createSlot(req.user as UserPayload, body);
+    const user = req.user as UserPayload;
+    this.adminService.createSlot(user, body);
   }
 
   @Get('slots')
-  async getAllSlots(
+  async getListSlot(
     @Req() req: Request,
     @Query('ids') slotIds: string,
   ): Promise<any> {
-    if (slotIds) {
-      const ids = slotIds.split(',');
-      return this.adminService.getSlotIds(ids);
-    }
-
-    return this.adminService.getSlots(req.user as UserPayload);
+    const user = req.user as UserPayload;
+    return this.adminService.getListSlot(user, slotIds);
   }
 
   @Get('slots/:id')
-  async getSlot(
+  async getOneSlot(
     @Req() req: Request,
     @Param('id') slotId: string,
   ): Promise<any> {
     if (slotId === undefined) {
       throw new BadRequestException();
     }
+    const user = req.user as UserPayload;
+    return this.adminService.getOneSlot(user, slotId);
+  }
 
-    return this.adminService.getSlot(slotId);
+  @Delete('slots/:id')
+  async deleteOneSlot(
+    @Req() req: Request,
+    @Param('id') slotId: string,
+  ): Promise<any> {
+    if (slotId === undefined) {
+      throw new BadRequestException();
+    }
+    const user = req.user as UserPayload;
+    return this.adminService.deleteOneSlot(user, slotId);
   }
 
   @Put('slots/:id')
-  async updateSlot(
+  async updateOneSlot(
     @Req() req: Request,
     @Body() body: UpdateSlotDto,
     @Param('id') slotId: string,
   ): Promise<any> {
-    await this.adminService.updateSlot(req.user as UserPayload, slotId, body);
+    await this.adminService.updateOneSlot(
+      req.user as UserPayload,
+      slotId,
+      body,
+    );
 
     return {
       message: 'success',
     };
   }
 
+  // Parks
   @Get('parks')
-  async getParks(
+  async getListPark(
     @Req() req: Request,
-    @Query('ids') parkIds: string,
+    @Query('ids') ids: string,
   ): Promise<any> {
-    if (parkIds) {
-      const ids = parkIds.split(',');
-      return this.adminService.getParksFromIds(ids);
-    }
-
-    return this.adminService.getParks();
+    const user = req.user as UserPayload;
+    return this.adminService.getListPark(user, ids);
   }
 
   @Get('parks/:id')
-  async getPark(
+  async getOnePark(
     @Req() req: Request,
-    @Param('id') parkId: string,
+    @Param('id') slotId: string,
   ): Promise<any> {
-    return this.adminService.getPark(parkId);
+    if (slotId === undefined) {
+      throw new BadRequestException();
+    }
+    const user = req.user as UserPayload;
+    return this.adminService.getOnePark(user, slotId);
   }
 
-  @Get('parkings')
-  async getParkings(
+  @Put('parks/:id')
+  async updateOnePark(
     @Req() req: Request,
-    @Query('ids') parkIds: string,
+    @Body() body: UpdateParkDto,
+    @Param('id') slotId: string,
   ): Promise<any> {
-    // if (parkIds) {
-    //   const ids = parkIds.split(',');
-    //   return this.adminService.getParksFromIds(ids);
-    // }
+    const user = req.user as UserPayload;
 
-    return this.adminService.getParkings();
+    console.log(body);
+
+    await this.adminService.updateOnePark(user, slotId, body);
+
+    return {
+      message: 'success',
+    };
+  }
+
+  @Post('parks')
+  async createPark(
+    @Req() req: Request,
+    @Body() body: CreateSlotDto,
+  ): Promise<any> {
+    const user = req.user as UserPayload;
+    await this.adminService.createPark(user, body);
+
+    return {
+      message: 'success',
+    };
+  }
+
+  @Delete('parks/:id')
+  async deleteOnePark(
+    @Req() req: Request,
+    @Param('id') id: string,
+  ): Promise<any> {
+    if (id === undefined) {
+      throw new BadRequestException();
+    }
+    const user = req.user as UserPayload;
+    return this.adminService.deleteOnePark(user, id);
+  }
+
+  // Booking
+  @Get('bookings')
+  async getListBooking(
+    @Req() req: Request,
+    @Query('ids') ids: string,
+  ): Promise<any> {
+    const user = req.user as UserPayload;
+    return this.adminService.getListBooking(user, ids);
+  }
+
+  // Invoices
+  @Get('invoices')
+  async getListInvoice(
+    @Req() req: Request,
+    @Query('ids') ids: string,
+  ): Promise<any> {
+    const user = req.user as UserPayload;
+    return this.adminService.getListInvoice(user, ids);
+  }
+
+  // Drivers
+  @Get('drivers')
+  async getListDriver(
+    @Req() req: Request,
+    @Query('ids') ids: string,
+  ): Promise<any> {
+    const user = req.user as UserPayload;
+    return this.adminService.getListDriver(user, ids);
+  }
+
+  // Drivers
+  @Get('managers')
+  async getListManager(
+    @Req() req: Request,
+    @Query('ids') ids: string,
+  ): Promise<any> {
+    const user = req.user as UserPayload;
+    return this.adminService.getListManager(user, ids);
   }
 }

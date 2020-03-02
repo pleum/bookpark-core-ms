@@ -9,6 +9,7 @@ export const ParkSchema = new mongoose.Schema(
     manager: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'Manager',
+      required: true,
     },
     location: {
       type: { type: mongoose.SchemaTypes.String, default: 'Point' },
