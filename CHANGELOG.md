@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/pleum/bookpark-core-ms/compare/v0.0.3...v0.0.4) (2020-03-02)
+
+
+### Features
+
+* admin ([a3fc729](https://github.com/pleum/bookpark-core-ms/commit/a3fc72954a69a48579eff3a3398e67b50faca9bb))
+
 ### [0.0.3](https://github.com/pleum/bookpark-core-ms/compare/v0.0.2...v0.0.3) (2020-03-01)
 
 
