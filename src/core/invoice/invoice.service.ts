@@ -16,9 +16,10 @@ import { ConfigService } from '@nestjs/config';
 import { ActivityService } from '../activity/activity.service';
 import { Parking } from '../parking/interfaces/parking.interface';
 import e = require('express');
+import { ReactAdminCrud } from 'src/admin/react-admin-crud.service';
 
 @Injectable()
-export class InvoiceService {
+export class InvoiceService extends ReactAdminCrud<Invoice> {
   private readonly logger = new Logger(InvoiceService.name);
 
   constructor(
@@ -28,7 +29,9 @@ export class InvoiceService {
     @Inject(forwardRef(() => ActivityService))
     private readonly activityService: ActivityService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    super(invoiceModel);
+  }
 
   async createInvoice(
     driverId: string,
