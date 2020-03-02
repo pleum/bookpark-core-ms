@@ -10,6 +10,8 @@ import { BookingService } from 'src/core/booking/booking.service';
 import { InvoiceService } from 'src/core/invoice/invoice.service';
 import { DriverService } from 'src/core/driver/driver.service';
 import { ManagerService } from 'src/core/manager/manager.service';
+import { RequestService } from 'src/core/request/request.service';
+import { CreateRequestDto } from './resource/dto/create-request.dto';
 
 @Injectable()
 export class AdminService {
@@ -21,6 +23,7 @@ export class AdminService {
     private readonly invocieService: InvoiceService,
     private readonly driverService: DriverService,
     private readonly managerService: ManagerService,
+    private readonly requestService: RequestService,
   ) {}
 
   async createSlot(user: UserPayload, data: CreateSlotDto) {
@@ -178,5 +181,41 @@ export class AdminService {
 
       // TODO:: manager
     }
+  }
+
+  async getOneManager(user: UserPayload, id: string) {
+    if (user.role === 'admin') {
+      return this.managerService.getOne(id);
+    }
+    // TODO:: manager
+  }
+
+  // Request
+  async getListRequest(user: UserPayload, ids: string = undefined) {
+    if (ids) {
+      if (user.role === 'admin') {
+        const idsString = ids.split(',');
+        return this.requestService.getMany(idsString);
+      }
+
+      // TODO:: manager
+    } else {
+      if (user.role === 'admin') {
+        return this.requestService.getList();
+      }
+
+      // TODO:: manager
+    }
+  }
+
+  async getOneRequest(user: UserPayload, id: string) {
+    if (user.role === 'admin') {
+      return this.requestService.getOne(id);
+    }
+    // TODO:: manager
+  }
+
+  async createRequest(user: UserPayload, data: CreateRequestDto) {
+    return this.requestService.createOne({ ...data, manager: user.userId });
   }
 }
