@@ -5,7 +5,9 @@ import * as compression from 'compression';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+  });
   app.use(helmet());
   app.use(compression());
   await app.listen(4000);
