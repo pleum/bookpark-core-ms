@@ -276,4 +276,12 @@ export class InvoiceService extends ReactAdminCrud<Invoice> {
     const updated = await Promise.resolve(timeoutInvoicesPromise);
     this.logger.log(`updated ${updated.length} timeout invoices`);
   }
+
+  async getListFromActivitys(activityIds: string[]): Promise<Invoice[] | null> {
+    return this.invoiceModel
+      .find({ activity: { $in: activityIds } })
+      .populate({ path: 'driver', select: 'name' })
+      .lean()
+      .exec();
+  }
 }

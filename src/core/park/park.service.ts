@@ -66,4 +66,11 @@ export class ParkService extends ReactAdminCrud<Park> {
   async getAllFromIds(parkIds: string[]): Promise<Park[] | null> {
     return this.parkModel.find({ _id: { $in: parkIds } }).exec();
   }
+
+  async getParkFromManagerId(managerId: string): Promise<Park | null> {
+    return this.parkModel
+      .findOne({ manager: managerId })
+      .lean()
+      .exec();
+  }
 }

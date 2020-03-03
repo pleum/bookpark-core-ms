@@ -64,4 +64,12 @@ export class BookingService extends ReactAdminCrud<Booking> {
 
     await Promise.resolve(updatedPromises);
   }
+
+  async getListFromActivitys(activityIds: string[]): Promise<Booking[] | null> {
+    return this.model
+      .find({ activity: { $in: activityIds } })
+      .populate({ path: 'driver', select: 'name' })
+      .lean()
+      .exec();
+  }
 }

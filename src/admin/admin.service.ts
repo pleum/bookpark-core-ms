@@ -1,4 +1,8 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { SlotService } from 'src/core/slot/slot.service';
 import { UserPayload } from './auth/strategies/jwt.strategy';
 import { UpdateSlotDto } from './resource/dto/update-slot.dto';
@@ -12,6 +16,8 @@ import { DriverService } from 'src/core/driver/driver.service';
 import { ManagerService } from 'src/core/manager/manager.service';
 import { RequestService } from 'src/core/request/request.service';
 import { CreateRequestDto } from './resource/dto/create-request.dto';
+import { RegisterService } from 'src/core/register/register.service';
+import { ActivityService } from 'src/core/activity/activity.service';
 
 @Injectable()
 export class AdminService {
@@ -24,6 +30,8 @@ export class AdminService {
     private readonly driverService: DriverService,
     private readonly managerService: ManagerService,
     private readonly requestService: RequestService,
+    private readonly registerService: RegisterService,
+    private readonly activityService: ActivityService,
   ) {}
 
   async createSlot(user: UserPayload, data: CreateSlotDto) {
@@ -46,10 +54,12 @@ export class AdminService {
       }
     } else {
       if (user.role === 'admin') {
-        return this.slotService.getAllSlot();
+        return this.slotService.getList();
+      } else if (user.role === 'manager') {
+        const park = await this.parkService.getParkFromManagerId(user.userId);
+        return this.slotService.getListFromPark(park._id);
       }
-
-      return this.slotService.getAllSlotFromManagerId('1');
+      throw new ForbiddenException();
     }
   }
 
@@ -123,9 +133,12 @@ export class AdminService {
     } else {
       if (user.role === 'admin') {
         return this.bookingService.getList();
+      } else if (user.role === 'manager') {
+        const park = await this.parkService.getParkFromManagerId(user.userId);
+        const activitys = await this.activityService.getListFromPark(park._id);
+        const activityIds = activitys.map(a => a._id);
+        return this.bookingService.getListFromActivitys(activityIds);
       }
-
-      // TODO:: manager
     }
   }
 
@@ -141,9 +154,12 @@ export class AdminService {
     } else {
       if (user.role === 'admin') {
         return this.invocieService.getList();
+      } else if (user.role === 'manager') {
+        const park = await this.parkService.getParkFromManagerId(user.userId);
+        const activitys = await this.activityService.getListFromPark(park._id);
+        const activityIds = activitys.map(a => a._id);
+        return this.invocieService.getListFromActivitys(activityIds);
       }
-
-      // TODO:: manager
     }
   }
 
@@ -168,10 +184,10 @@ export class AdminService {
   // Managr
   async getListManager(user: UserPayload, ids: string = undefined) {
     if (ids) {
-      if (user.role === 'admin') {
-        const idsString = ids.split(',');
-        return this.managerService.getMany(idsString);
-      }
+      // if (user.role === 'admin') {
+      const idsString = ids.split(',');
+      return this.managerService.getMany(idsString);
+      // }
 
       // TODO:: manager
     } else {
@@ -202,9 +218,9 @@ export class AdminService {
     } else {
       if (user.role === 'admin') {
         return this.requestService.getList();
+      } else if (user.role === 'manager') {
+        return this.requestService.getListRequestFromManager(user.userId);
       }
-
-      // TODO:: manager
     }
   }
 
@@ -217,5 +233,87 @@ export class AdminService {
 
   async createRequest(user: UserPayload, data: CreateRequestDto) {
     return this.requestService.createOne({ ...data, manager: user.userId });
+  }
+
+  async approvedRequest(user: UserPayload, id: string) {
+    if (user.role === 'admin') {
+      const request = await this.requestService.getOne(id);
+      if (request.status !== 'PENDING') {
+        throw new NotAcceptableException();
+      }
+      return await this.requestService.updateOne(id, {
+        status: 'APPROVED',
+        attendant: user.userId,
+      });
+    }
+    // TODO:: manager
+  }
+
+  async rejectRequest(user: UserPayload, id: string) {
+    if (user.role === 'admin') {
+      const request = await this.requestService.getOne(id);
+      if (request.status !== 'PENDING') {
+        throw new NotAcceptableException();
+      }
+      return await this.requestService.updateOne(id, {
+        status: 'REJECT',
+        attendant: user.userId,
+      });
+    }
+    // TODO:: manager
+  }
+
+  // Request
+  async getListRegister(user: UserPayload, ids: string = undefined) {
+    if (ids) {
+      if (user.role === 'admin') {
+        const idsString = ids.split(',');
+        return this.registerService.getMany(idsString);
+      }
+
+      // TODO:: manager
+    } else {
+      if (user.role === 'admin') {
+        return this.registerService.getList();
+      }
+
+      // TODO:: manager
+    }
+  }
+
+  async getOneRegister(user: UserPayload, id: string) {
+    if (user.role === 'admin') {
+      return this.registerService.getOne(id);
+    }
+    // TODO:: manager
+  }
+
+  async approvedRegister(user: UserPayload, id: string) {
+    if (user.role === 'admin') {
+      const register = await this.registerService.getOne(id);
+
+      if (register.status !== 'PENDING') {
+        throw new NotAcceptableException();
+      }
+
+      const manager = await this.managerService.convertToManager(register);
+      await this.registerService.updateOne(id, { status: 'APPROVED' });
+
+      return manager;
+    }
+    // TODO:: manager
+  }
+
+  async rejectRegister(user: UserPayload, id: string) {
+    if (user.role === 'admin') {
+      const register = await this.registerService.getOne(id);
+
+      if (register.status !== 'PENDING') {
+        throw new NotAcceptableException();
+      }
+
+      return await this.registerService.updateOne(id, { status: 'REJECT' });
+    }
+    // TODO:: manager
   }
 }

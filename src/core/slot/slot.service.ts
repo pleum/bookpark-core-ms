@@ -77,4 +77,12 @@ export class SlotService extends ReactAdminCrud<Slot> {
   async getSlotFromIds(ids: string[]): Promise<Slot[] | null> {
     return this.slotModel.find({ _id: { $in: ids } }).exec();
   }
+
+  async getListFromPark(parkId: string): Promise<Slot[] | null> {
+    return this.slotModel
+      .find({ park: parkId })
+      .populate('park')
+      .lean()
+      .exec();
+  }
 }
