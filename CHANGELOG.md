@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://github.com/pleum/bookpark-core-ms/compare/v0.0.7...v0.0.8) (2020-03-03)
+
+
+### Bug Fixes
+
+* enable cors from all origin ([699196f](https://github.com/pleum/bookpark-core-ms/commit/699196f17b7229b9d09a9dcce935b87e885bdf19))
+
 ### [0.0.7](https://github.com/pleum/bookpark-core-ms/compare/v0.0.6...v0.0.7) (2020-03-03)
 
 
