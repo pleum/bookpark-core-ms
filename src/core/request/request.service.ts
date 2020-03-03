@@ -11,4 +11,15 @@ export class RequestService extends ReactAdminCrud<Request> {
   ) {
     super(requestModel);
   }
+
+  async getListRequestFromManager(
+    managerId: string,
+  ): Promise<Request[] | null> {
+    return this.requestModel
+      .find({ manager: managerId })
+      .populate({ path: 'manager', select: 'email' })
+      .populate({ path: 'attendant', select: 'email' })
+      .lean()
+      .exec();
+  }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ManagerService } from 'src/core/manager/manager.service';
 import { JwtService } from '@nestjs/jwt';
 import { Manager } from 'src/core/manager/interfaces/manager.interface';
+import { compare } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -10,9 +11,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any> {
+  async validateUser(username: string, password: string): Promise<any> {
     const manager: Manager = await this.managerService.findOne(username);
-    if (manager && manager.password === pass) {
+    const isCorrectPassword = await compare(password, manager.password);
+
+    if (manager && isCorrectPassword) {
       const { password, ...result } = manager;
       return result;
     }

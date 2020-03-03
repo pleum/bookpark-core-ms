@@ -10,6 +10,7 @@ import { Activity } from './interfaces/activity.interface';
 import { BookingService } from '../booking/booking.service';
 import { DriverService } from '../driver/driver.service';
 import { ParkingService } from '../parking/parking.service';
+import { Invoice } from '../invoice/interfaces/invoice.interface';
 
 @Injectable()
 export class ActivityService {
@@ -123,5 +124,9 @@ export class ActivityService {
     await activity.currentBooking.updateOne({
       status: 'FINISH',
     });
+  }
+
+  async getListFromPark(parkId: string): Promise<Activity[] | null> {
+    return this.activityModel.find({ park: parkId }).exec();
   }
 }

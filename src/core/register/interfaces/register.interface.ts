@@ -7,4 +7,5 @@ export interface Register extends Document {
   readonly phoneNumber: string;
   readonly parkName: string;
   readonly parkAddress: string;
+  readonly status: string;
 }

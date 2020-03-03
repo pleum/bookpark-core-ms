@@ -234,4 +234,74 @@ export class ResourceController {
       message: 'success',
     };
   }
+
+  @Post('requests/:id/approved')
+  async approvedRequest(
+    @Req() req: Request,
+    @Param('id') id: string,
+  ): Promise<any> {
+    if (id === undefined) {
+      throw new BadRequestException();
+    }
+    const user = req.user as UserPayload;
+    return this.adminService.approvedRequest(user, id);
+  }
+
+  @Post('requests/:id/reject')
+  async rejectRequest(
+    @Req() req: Request,
+    @Param('id') id: string,
+  ): Promise<any> {
+    if (id === undefined) {
+      throw new BadRequestException();
+    }
+    const user = req.user as UserPayload;
+    return this.adminService.rejectRequest(user, id);
+  }
+
+  // Registers
+  @Get('registers')
+  async getListRegister(
+    @Req() req: Request,
+    @Query('ids') ids: string,
+  ): Promise<any> {
+    const user = req.user as UserPayload;
+    return this.adminService.getListRegister(user, ids);
+  }
+
+  @Get('registers/:id')
+  async getOneRegister(
+    @Req() req: Request,
+    @Param('id') id: string,
+  ): Promise<any> {
+    if (id === undefined) {
+      throw new BadRequestException();
+    }
+    const user = req.user as UserPayload;
+    return this.adminService.getOneRegister(user, id);
+  }
+
+  @Post('registers/:id/approved')
+  async approvedRegister(
+    @Req() req: Request,
+    @Param('id') id: string,
+  ): Promise<any> {
+    if (id === undefined) {
+      throw new BadRequestException();
+    }
+    const user = req.user as UserPayload;
+    return this.adminService.approvedRegister(user, id);
+  }
+
+  @Post('registers/:id/reject')
+  async rejectRegister(
+    @Req() req: Request,
+    @Param('id') id: string,
+  ): Promise<any> {
+    if (id === undefined) {
+      throw new BadRequestException();
+    }
+    const user = req.user as UserPayload;
+    return this.adminService.rejectRegister(user, id);
+  }
 }
