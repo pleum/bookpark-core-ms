@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ManagerService } from 'src/core/manager/manager.service';
 import { JwtService } from '@nestjs/jwt';
 import { Manager } from 'src/core/manager/interfaces/manager.interface';
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 
 @Injectable()
 export class AuthService {

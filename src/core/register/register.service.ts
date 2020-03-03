@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { ReactAdminCrud } from 'src/admin/react-admin-crud.service';
 import { Register } from './interfaces/register.interface';
 import { CreateRegisterDto } from './dto/create-register.dto';
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 
 @Injectable()
 export class RegisterService extends ReactAdminCrud<Register> {
