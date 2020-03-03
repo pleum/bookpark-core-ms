@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.9](https://github.com/pleum/bookpark-core-ms/compare/v0.0.8...v0.0.9) (2020-03-03)
+
+
+### Bug Fixes
+
+* change 'bcrypt' to 'bcryptjs' ([a91ed8f](https://github.com/pleum/bookpark-core-ms/commit/a91ed8fa2a439bc899d564dc60e89f04f2aef3f5))
+
 ### [0.0.8](https://github.com/pleum/bookpark-core-ms/compare/v0.0.7...v0.0.8) (2020-03-03)
 
 
