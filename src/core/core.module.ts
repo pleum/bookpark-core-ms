@@ -8,6 +8,7 @@ import { SlotModule } from './slot/slot.module';
 import { ParkingModule } from './parking/parking.module';
 import { ActivityModule } from './activity/activity.module';
 import { RequestModule } from './request/request.module';
+import { RegisterModule } from './register/register.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { RequestModule } from './request/request.module';
     ParkingModule,
     ActivityModule,
     RequestModule,
+    RegisterModule,
   ],
   exports: [
     InvoiceModule,
@@ -31,6 +33,7 @@ import { RequestModule } from './request/request.module';
     ParkingModule,
     ActivityModule,
     RequestModule,
+    RegisterModule,
   ],
 })
 export class CoreModule {}

@@ -11,6 +11,7 @@ import { AdminModule } from './admin/admin.module';
 import { PaymentModule } from './payment/payment.module';
 import { DeviceModule } from './device/device.module';
 import { TasksModule } from './tasks/tasks.module';
+import { RegisterModule } from './register/register.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { TasksModule } from './tasks/tasks.module';
     PaymentModule,
     DeviceModule,
     TasksModule,
+    RegisterModule,
   ],
   controllers: [AppController],
 })
