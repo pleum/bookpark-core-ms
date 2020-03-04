@@ -156,4 +156,8 @@ export class LiffService {
     }
     return driver;
   }
+
+  async getSlotDetail(slotId: string) {
+    return await this.slotService.getOne(slotId);
+  }
 }

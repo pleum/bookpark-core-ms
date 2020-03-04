@@ -1,4 +1,12 @@
-import { Controller, UseGuards, Get, Param, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Get,
+  Param,
+  Post,
+  Body,
+  HttpCode,
+} from '@nestjs/common';
 import { LiffGuard } from './guards/liff.guard';
 import {
   CurrentUser,
@@ -6,6 +14,7 @@ import {
 } from './decorators/current-user.decorator';
 import { LiffService } from './liff.service';
 import { RegisterDriverDto } from './dto/register-driver.dto';
+import { get } from 'http';
 
 @Controller('liff')
 @UseGuards(LiffGuard)
@@ -28,6 +37,7 @@ export class LiffController {
   }
 
   @Get('activity')
+  @HttpCode(200)
   async currentUserActivity(
     @CurrentUser() user: LineUserProfile,
   ): Promise<any> {
@@ -65,5 +75,10 @@ export class LiffController {
   @Get('driver')
   async fetchDriver(@CurrentUser() user: LineUserProfile) {
     return this.liffService.fetchDriver(user.userId);
+  }
+
+  @Get('slots/:id')
+  async getSlotDetail(@Param('id') slotId: string) {
+    return this.liffService.getSlotDetail(slotId);
   }
 }
