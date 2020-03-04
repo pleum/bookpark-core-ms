@@ -1,14 +1,18 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Body, Post } from '@nestjs/common';
 import { DeviceService } from './device.service';
+import { UpdateDeviceDTO } from './dto/update-device.dto';
 
 @Controller('device')
 export class DeviceController {
   constructor(private readonly deviceService: DeviceService) {}
 
-  @Get('update')
-  async update(): Promise<any> {
-    const slotId = '5e5b9f89cda78434b0141743';
+  @Post('update')
+  async update(@Body() body: UpdateDeviceDTO): Promise<any> {
+    return this.deviceService.update(body);
+  }
 
-    return this.deviceService.update(slotId, false);
+  @Get('fetch')
+  async fetch(): Promise<any> {
+    return this.deviceService.fetch();
   }
 }
