@@ -7,6 +7,7 @@ export class ReactAdminCrud<T extends Document> {
   async getOne(id: string): Promise<T | null> {
     return this.model
       .findById(id)
+      .populate('park')
       .lean()
       .exec();
   }

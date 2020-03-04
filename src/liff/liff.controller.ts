@@ -1,10 +1,20 @@
-import { Controller, UseGuards, Get, Param, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Get,
+  Param,
+  Post,
+  Body,
+  HttpCode,
+} from '@nestjs/common';
 import { LiffGuard } from './guards/liff.guard';
 import {
   CurrentUser,
   LineUserProfile,
 } from './decorators/current-user.decorator';
 import { LiffService } from './liff.service';
+import { RegisterDriverDto } from './dto/register-driver.dto';
+import { get } from 'http';
 
 @Controller('liff')
 @UseGuards(LiffGuard)
@@ -27,6 +37,7 @@ export class LiffController {
   }
 
   @Get('activity')
+  @HttpCode(200)
   async currentUserActivity(
     @CurrentUser() user: LineUserProfile,
   ): Promise<any> {
@@ -51,5 +62,23 @@ export class LiffController {
     @CurrentUser() user: LineUserProfile,
   ): Promise<any> {
     return this.liffService.createPaymentParking(user.userId);
+  }
+
+  @Post('register')
+  async driverRegister(
+    @CurrentUser() user: LineUserProfile,
+    @Body() body: RegisterDriverDto,
+  ) {
+    return this.liffService.driverRegister(user.userId, body);
+  }
+
+  @Get('driver')
+  async fetchDriver(@CurrentUser() user: LineUserProfile) {
+    return this.liffService.fetchDriver(user.userId);
+  }
+
+  @Get('slots/:id')
+  async getSlotDetail(@Param('id') slotId: string) {
+    return this.liffService.getSlotDetail(slotId);
   }
 }
