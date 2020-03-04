@@ -10,7 +10,6 @@ import { Activity } from './interfaces/activity.interface';
 import { BookingService } from '../booking/booking.service';
 import { DriverService } from '../driver/driver.service';
 import { ParkingService } from '../parking/parking.service';
-import { Invoice } from '../invoice/interfaces/invoice.interface';
 
 @Injectable()
 export class ActivityService {
@@ -90,6 +89,9 @@ export class ActivityService {
       .populate({
         path: 'slot',
       })
+      .populate({
+        path: 'driver',
+      })
       .exec();
 
     return activity;
@@ -132,38 +134,41 @@ export class ActivityService {
 
   async finishActivity(slotId: string): Promise<any> {
     const actvity = await this.activityModel
-      .findOne({ slot: slotId })
+      .findOne({ slot: slotId, status: 'PARKED' })
       .populate('currentParking')
       .populate('slot')
       .exec();
+
+    // console.log(slotId, actvity);
 
     if (!actvity) {
       return;
     }
 
-    console.log('try to finish');
-    if (actvity.currentParking.status !== 'PARKED_PAID') {
-      return;
+    if (
+      actvity.currentParking.status === 'PARKED_PAID' ||
+      actvity.currentParking.status === 'PARKED'
+    ) {
+      await actvity
+        .updateOne({
+          status: 'FINISH',
+        })
+        .exec();
+
+      await actvity.slot
+        .updateOne({
+          status: 'AVAILABLE',
+          gate: 'CLOSE',
+        })
+        .exec();
+
+      await actvity.currentParking
+        .updateOne({
+          status: 'FINISH',
+        })
+        .exec();
+
+      console.log('finish');
     }
-
-    await actvity
-      .updateOne({
-        status: 'FINISH',
-      })
-      .exec();
-
-    await actvity.slot
-      .updateOne({
-        status: 'AVAILABLE',
-      })
-      .exec();
-
-    await actvity.currentParking
-      .updateOne({
-        status: 'FINISH',
-      })
-      .exec();
-
-    console.log('finish');
   }
 }

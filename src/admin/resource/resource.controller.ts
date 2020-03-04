@@ -158,6 +158,16 @@ export class ResourceController {
     return this.adminService.getListBooking(user, ids);
   }
 
+  // Parkings
+  @Get('parkings')
+  async getListParking(
+    @Req() req: Request,
+    @Query('ids') ids: string,
+  ): Promise<any> {
+    const user = req.user as UserPayload;
+    return this.adminService.getListParking(user, ids);
+  }
+
   // Invoices
   @Get('invoices')
   async getListInvoice(

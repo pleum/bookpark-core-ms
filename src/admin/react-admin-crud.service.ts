@@ -1,5 +1,4 @@
 import { Model, Document } from 'mongoose';
-import { Request } from 'express';
 
 export class ReactAdminCrud<T extends Document> {
   constructor(public model: Model<T>) {}

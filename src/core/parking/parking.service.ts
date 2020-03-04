@@ -4,12 +4,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Parking } from './interfaces/parking.interface';
 import { add, differenceInMinutes } from 'date-fns';
+import { ReactAdminCrud } from 'src/admin/react-admin-crud.service';
 
 @Injectable()
-export class ParkingService {
+export class ParkingService extends ReactAdminCrud<Parking> {
   constructor(
     @InjectModel('Parking') private readonly parkingModel: Model<Parking>,
-  ) {}
+  ) {
+    super(parkingModel);
+  }
 
   async startParkingFromActivity(activity: Activity): Promise<Parking> {
     const currentTime = new Date();
@@ -128,5 +131,13 @@ export class ParkingService {
     });
     const result = await Promise.resolve(promises);
     console.log(result);
+  }
+
+  async getListFromActivitys(activityIds: string[]): Promise<Parking[] | null> {
+    return this.model
+      .find({ activity: { $in: activityIds } })
+      .populate({ path: 'driver', select: 'name' })
+      .lean()
+      .exec();
   }
 }

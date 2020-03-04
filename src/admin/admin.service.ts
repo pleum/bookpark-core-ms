@@ -142,6 +142,27 @@ export class AdminService {
     }
   }
 
+  // Parking
+  async getListParking(user: UserPayload, ids: string = undefined) {
+    if (ids) {
+      if (user.role === 'admin') {
+        const idsString = ids.split(',');
+        return this.parkingService.getMany(idsString);
+      }
+
+      // TODO:: manager
+    } else {
+      if (user.role === 'admin') {
+        return this.parkingService.getList();
+      } else if (user.role === 'manager') {
+        const park = await this.parkService.getParkFromManagerId(user.userId);
+        const activitys = await this.activityService.getListFromPark(park._id);
+        const activityIds = activitys.map(a => a._id);
+        return this.parkingService.getListFromActivitys(activityIds);
+      }
+    }
+  }
+
   // Invoice
   async getListInvoice(user: UserPayload, ids: string = undefined) {
     if (ids) {
