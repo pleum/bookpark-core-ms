@@ -157,6 +157,11 @@ export class ActivityService {
         status: 'AVAILABLE',
       })
       .exec();
+
+    await actvity.currentParking.updateOne({
+      status: 'FINISH',
+    });
+
     console.log('finish');
   }
 }
