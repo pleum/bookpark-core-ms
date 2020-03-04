@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.10](https://github.com/pleum/bookpark-core-ms/compare/v0.0.9...v0.0.10) (2020-03-04)
+
+
+### Features
+
+* add driver register ([6be16f8](https://github.com/pleum/bookpark-core-ms/commit/6be16f8beedd7735faa3fdd6b1b96ecf46854064))
+* fetch slot ([64cb514](https://github.com/pleum/bookpark-core-ms/commit/64cb51426dc79094ed167ccea7fef4bdb4b996b7))
+
 ### [0.0.9](https://github.com/pleum/bookpark-core-ms/compare/v0.0.8...v0.0.9) (2020-03-03)
 
 
