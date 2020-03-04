@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.11](https://github.com/pleum/bookpark-core-ms/compare/v0.0.10...v0.0.11) (2020-03-04)
+
+
+### Features
+
+* iot connect ([72abca5](https://github.com/pleum/bookpark-core-ms/commit/72abca5e5b54e004e6c4c68e60535a6dc57a517f))
+
 ### [0.0.10](https://github.com/pleum/bookpark-core-ms/compare/v0.0.9...v0.0.10) (2020-03-04)
 
 
