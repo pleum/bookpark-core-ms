@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.14](https://github.com/pleum/bookpark-core-ms/compare/v0.0.13...v0.0.14) (2020-03-04)
+
+
+### Features
+
+* add parking list ([11c7828](https://github.com/pleum/bookpark-core-ms/commit/11c78280eb56c68347a12f2682ee80ce0a0c0c96))
+
 ### [0.0.13](https://github.com/pleum/bookpark-core-ms/compare/v0.0.12...v0.0.13) (2020-03-04)
 
 
