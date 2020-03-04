@@ -118,7 +118,7 @@ export class LiffService {
     }
   }
 
-  async createPaymentParking(lineUserId: string) {
+  async createPaymentParking(lineUserId: string): Promise<any> {
     const activity = await this.activityService.getUserActivity(lineUserId);
 
     if (activity.currentParking.status !== 'PARKED_END_FREETIME') {
@@ -139,6 +139,8 @@ export class LiffService {
     await parking.updateOne({
       invoice: invoice.id,
     });
+
+    return { paymentUrl: invoice.paymentUrl };
   }
 
   async driverRegister(lineUserId: string, dto: RegisterDriverDto) {

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InvoiceService } from 'src/core/invoice/invoice.service';
 import { BookingService } from 'src/core/booking/booking.service';
+import { ParkingService } from 'src/core/parking/parking.service';
 
 @Injectable()
 export class TasksService {
@@ -9,11 +10,15 @@ export class TasksService {
   constructor(
     private readonly invoiceService: InvoiceService,
     private readonly bookingService: BookingService,
+    private readonly parkingService: ParkingService,
   ) {}
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   handleCron() {
     this.invoiceService.updateTimeoutInvoice();
     this.bookingService.updateTimeoutBooking();
+    this.parkingService.updateEndFree();
+    this.parkingService.calculatedEndFreePrice();
+    this.parkingService.createExtendPaidParking();
   }
 }

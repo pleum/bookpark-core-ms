@@ -24,14 +24,11 @@ export class DeviceService {
       isDetected: isDetected,
     });
 
-    if (slot.gate === 'CLOSE') {
-      return;
+    if (isDetected && slot.gate === 'OPEN') {
+      return await this.activityService.startParking(slotId);
+    } else if (!isDetected && slot.gate === 'OPEN') {
+      console.log('dadw');
+      return await this.activityService.finishActivity(slotId);
     }
-
-    if (!isDetected) {
-      return;
-    }
-
-    return await this.activityService.startParking(slotId);
   }
 }

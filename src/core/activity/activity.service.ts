@@ -129,4 +129,34 @@ export class ActivityService {
   async getListFromPark(parkId: string): Promise<Activity[] | null> {
     return this.activityModel.find({ park: parkId }).exec();
   }
+
+  async finishActivity(slotId: string): Promise<any> {
+    const actvity = await this.activityModel
+      .findOne({ slot: slotId })
+      .populate('currentParking')
+      .populate('slot')
+      .exec();
+
+    if (!actvity) {
+      return;
+    }
+
+    console.log('try to finish');
+    if (actvity.currentParking.status !== 'PARKED_PAID') {
+      return;
+    }
+
+    await actvity
+      .updateOne({
+        status: 'FINISH',
+      })
+      .exec();
+
+    await actvity.slot
+      .updateOne({
+        status: 'AVAILABLE',
+      })
+      .exec();
+    console.log('finish');
+  }
 }
