@@ -16,6 +16,7 @@ import { SlotService } from 'src/core/slot/slot.service';
 import { Slot } from 'src/core/slot/interfaces/slot.interface';
 import { InvoiceService } from 'src/core/invoice/invoice.service';
 import { ParkingService } from 'src/core/parking/parking.service';
+import { RegisterDriverDto } from './dto/register-driver.dto';
 
 @Injectable()
 export class LiffService {
@@ -138,5 +139,21 @@ export class LiffService {
     await parking.updateOne({
       invoice: invoice.id,
     });
+  }
+
+  async driverRegister(lineUserId: string, dto: RegisterDriverDto) {
+    const driver = await this.driverService.getDriverByLineUserId(lineUserId);
+    if (driver) {
+      throw new NotAcceptableException();
+    }
+    return this.driverService.createOne({ ...dto, lineUserId });
+  }
+
+  async fetchDriver(lineUserId: string) {
+    const driver = await this.driverService.getDriverByLineUserId(lineUserId);
+    if (!driver) {
+      throw new NotFoundException();
+    }
+    return driver;
   }
 }

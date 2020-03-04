@@ -5,6 +5,7 @@ import {
   LineUserProfile,
 } from './decorators/current-user.decorator';
 import { LiffService } from './liff.service';
+import { RegisterDriverDto } from './dto/register-driver.dto';
 
 @Controller('liff')
 @UseGuards(LiffGuard)
@@ -51,5 +52,18 @@ export class LiffController {
     @CurrentUser() user: LineUserProfile,
   ): Promise<any> {
     return this.liffService.createPaymentParking(user.userId);
+  }
+
+  @Post('register')
+  async driverRegister(
+    @CurrentUser() user: LineUserProfile,
+    @Body() body: RegisterDriverDto,
+  ) {
+    return this.liffService.driverRegister(user.userId, body);
+  }
+
+  @Get('driver')
+  async fetchDriver(@CurrentUser() user: LineUserProfile) {
+    return this.liffService.fetchDriver(user.userId);
   }
 }
