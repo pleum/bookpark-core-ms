@@ -158,9 +158,11 @@ export class ActivityService {
       })
       .exec();
 
-    await actvity.currentParking.updateOne({
-      status: 'FINISH',
-    });
+    await actvity.currentParking
+      .updateOne({
+        status: 'FINISH',
+      })
+      .exec();
 
     console.log('finish');
   }
