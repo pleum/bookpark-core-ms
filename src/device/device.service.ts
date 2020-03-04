@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { SlotService } from 'src/core/slot/slot.service';
 import { ActivityService } from 'src/core/activity/activity.service';
+import { UpdateDeviceDTO } from './dto/update-device.dto';
 
 @Injectable()
 export class DeviceService {
@@ -9,29 +10,32 @@ export class DeviceService {
     private readonly activityService: ActivityService,
   ) {}
 
-  async update(slotId: string, isDetected: boolean): Promise<any> {
-    const slot = await this.slotService.getOneSlotFromId(slotId);
+  async update(dto: UpdateDeviceDTO): Promise<any> {
+    const slot = await this.slotService.getOneFromDeviceId(dto.deviceId);
 
     if (slot === null) {
       throw new NotFoundException('slot not found');
     }
 
-    if (slot.isDetected === isDetected) {
+    if (slot.isDetected === dto.isDetected) {
       return;
     }
 
     await slot.updateOne({
-      isDetected: isDetected,
+      isDetected: dto.isDetected,
     });
 
-    if (slot.gate === 'CLOSE') {
-      return;
+    if (dto.isDetected && slot.gate === 'OPEN') {
+      return await this.activityService.startParking(slot._id);
+    } else if (!dto.isDetected && slot.gate === 'OPEN') {
+      return await this.activityService.finishActivity(slot._id);
     }
+  }
 
-    if (!isDetected) {
-      return;
-    }
-
-    return await this.activityService.startParking(slotId);
+  async fetch(): Promise<any> {
+    return (await this.slotService.getList()).map(slot => ({
+      deviceId: slot.deviceId,
+      gate: slot.gate,
+    }));
   }
 }

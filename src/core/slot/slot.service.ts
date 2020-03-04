@@ -85,4 +85,8 @@ export class SlotService extends ReactAdminCrud<Slot> {
       .lean()
       .exec();
   }
+
+  async getOneFromDeviceId(deviceId: string): Promise<Slot | null> {
+    return this.slotModel.findOne({ deviceId: deviceId }).exec();
+  }
 }

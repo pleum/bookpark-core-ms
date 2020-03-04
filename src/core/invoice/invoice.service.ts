@@ -13,10 +13,10 @@ import { Invoice } from './interfaces/invoice.interface';
 import { LinePayService } from 'src/line/line-pay/line-pay.service';
 import { Booking } from '../booking/interfaces/booking.interface';
 import { ConfigService } from '@nestjs/config';
-import { ActivityService } from '../activity/activity.service';
 import { Parking } from '../parking/interfaces/parking.interface';
-import e = require('express');
 import { ReactAdminCrud } from 'src/admin/react-admin-crud.service';
+import { DriverService } from '../driver/driver.service';
+import { LineMessagingService } from 'src/line/line-messaging/line-messaging.service';
 
 @Injectable()
 export class InvoiceService extends ReactAdminCrud<Invoice> {
@@ -26,9 +26,11 @@ export class InvoiceService extends ReactAdminCrud<Invoice> {
     @InjectModel('Invoice') private readonly invoiceModel: Model<Invoice>,
     @Inject(forwardRef(() => LinePayService))
     private readonly linePayService: LinePayService,
-    @Inject(forwardRef(() => ActivityService))
-    private readonly activityService: ActivityService,
+    @Inject(forwardRef(() => LineMessagingService))
+    private readonly lineMessagingService: LineMessagingService,
     private readonly configService: ConfigService,
+    @Inject(forwardRef(() => DriverService))
+    private readonly driverService: DriverService,
   ) {
     super(invoiceModel);
   }
@@ -168,6 +170,7 @@ export class InvoiceService extends ReactAdminCrud<Invoice> {
     };
 
     const linePayRequestRes = await this.linePayService.request(request);
+
     if (linePayRequestRes.data.returnCode !== '0000') {
       throw new BadGatewayException("can't create line pay request");
     }
@@ -204,15 +207,19 @@ export class InvoiceService extends ReactAdminCrud<Invoice> {
         { status: 'PAID', paymentAt: currentTime },
         { new: true },
       )
+      .populate('booking')
+      .populate('parking')
       .populate({
-        path: 'booking',
-        populate: { path: 'activity' },
+        path: 'activity',
+        populate: [{ path: 'park' }, { path: 'slot' }],
       })
       .exec();
 
     if (!updatedInvoice) {
       throw new NotFoundException('invoice not found');
     }
+
+    const driver = await this.driverService.getOne(updatedInvoice.driver._id);
 
     if (updatedInvoice.type === 'BOOKING') {
       const bookingEndedAt = add(currentTime, { minutes: 10 });
@@ -223,15 +230,119 @@ export class InvoiceService extends ReactAdminCrud<Invoice> {
         bookingAt: currentTime,
         bookingEndedAt: bookingEndedAt,
       });
-      await updatedInvoice.booking.activity.updateOne({
+      await updatedInvoice.activity.updateOne({
         status: 'BOOKED',
       });
+
+      this.lineMessagingService.sendPushMessage(driver.lineUserId, [
+        { type: 'text', text: 'ขอบคุณสำหรับการชำระเงิน' },
+        {
+          type: 'flex',
+          altText: 'daw',
+          contents: {
+            type: 'bubble',
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: 'RECEIPT',
+                  weight: 'bold',
+                  color: '#1DB446',
+                  size: 'sm',
+                },
+                {
+                  type: 'text',
+                  text: 'การจอง',
+                  weight: 'bold',
+                  size: 'xxl',
+                  margin: 'md',
+                },
+                {
+                  type: 'text',
+                  text: `${updatedInvoice.activity.park.name}`,
+                  size: 'xs',
+                  color: '#aaaaaa',
+                  wrap: true,
+                },
+                {
+                  type: 'separator',
+                  margin: 'xxl',
+                },
+                {
+                  type: 'box',
+                  layout: 'vertical',
+                  margin: 'xxl',
+                  spacing: 'sm',
+                  contents: [
+                    {
+                      type: 'box',
+                      layout: 'horizontal',
+                      contents: [
+                        {
+                          type: 'text',
+                          text: 'รวมทั้งหมด',
+                          size: 'sm',
+                          color: '#555555',
+                          flex: 0,
+                        },
+                        {
+                          type: 'text',
+                          text: `${updatedInvoice.totalPrice} บาท`,
+                          size: 'sm',
+                          color: '#111111',
+                          align: 'end',
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  type: 'separator',
+                  margin: 'xxl',
+                },
+                {
+                  type: 'box',
+                  layout: 'horizontal',
+                  margin: 'md',
+                  contents: [
+                    {
+                      type: 'text',
+                      text: 'INVOICE ID',
+                      size: 'xs',
+                      color: '#aaaaaa',
+                      flex: 0,
+                    },
+                    {
+                      type: 'text',
+                      text: updatedInvoice._id,
+                      color: '#aaaaaa',
+                      size: 'xs',
+                      align: 'end',
+                    },
+                  ],
+                },
+              ],
+            },
+            styles: {
+              footer: {
+                separator: true,
+              },
+            },
+          },
+        },
+      ]);
     } else if (updatedInvoice.type === 'PARKING') {
-      const parkingPaidEndedAt = add(currentTime, { seconds: 10 });
+      const parkingPaidEndedAt = add(currentTime, { seconds: 20 });
 
       await updatedInvoice.parking.updateOne({
         status: 'PARKED_PAID',
-        bookingEndedAt: parkingPaidEndedAt,
+        parkingEndedAt: parkingPaidEndedAt,
+      });
+
+      await updatedInvoice.activity.slot.updateOne({
+        gate: 'OPEN',
       });
     }
 

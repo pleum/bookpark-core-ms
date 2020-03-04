@@ -6,14 +6,17 @@ import {
   HttpService,
   Req,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { WebhookRequestBody } from '@line/bot-sdk';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
-import { createHmac } from 'crypto';
+// import { createHmac } from 'crypto';
 
 @Controller('chat-bot')
 export class ChatBotController {
+  private readonly logger = new Logger(ChatBotController.name);
+
   private dialogflowUrl: string;
   private lineProviderSecret: string;
 
@@ -33,19 +36,27 @@ export class ChatBotController {
     @Req() request: Request,
     @Body() webhookRequestBody: WebhookRequestBody,
   ): Promise<any> {
-    const signature = createHmac('SHA256', this.lineProviderSecret)
-      .update(JSON.stringify(webhookRequestBody))
-      .digest('base64')
-      .toString();
+    // const plainBody = JSON.stringify(request.body);
+    // const signature = createHmac('SHA256', this.lineProviderSecret)
+    //   .update(plainBody)
+    //   .digest('base64')
+    //   .toString();
 
-    if (signature !== request.headers['x-line-signature']) {
-      throw new UnauthorizedException();
-    }
+    // console.log(
+    //   webhookRequestBody,
+    //   request.headers['x-line-signature'],
+    //   signature,
+    //   this.lineProviderSecret,
+    // );
 
+    // if (signature !== request.headers['x-line-signature']) {
+    //   throw new UnauthorizedException();
+    // }
     const response = await this.httpService
       .post(this.dialogflowUrl, webhookRequestBody)
       .toPromise();
 
+    this.logger.log(`dialogflow - httpCode: ${response.status}`);
     if (response.status == 200) {
       return { message: 'success' };
     }
