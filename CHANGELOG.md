@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.15](https://github.com/pleum/bookpark-core-ms/compare/v0.0.14...v0.0.15) (2020-03-05)
+
+
+### Features
+
+* add flex message after parking paid ([ae2c7f6](https://github.com/pleum/bookpark-core-ms/commit/ae2c7f6ed4ebbca6768e59f3a4292c866a06006c))
+* add history ([bf1bfe7](https://github.com/pleum/bookpark-core-ms/commit/bf1bfe7af4360b6942f5e45b28a5eafa9426bd43))
+
 ### [0.0.14](https://github.com/pleum/bookpark-core-ms/compare/v0.0.13...v0.0.14) (2020-03-04)
 
 
