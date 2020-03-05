@@ -105,7 +105,7 @@ export class InvoiceService extends ReactAdminCrud<Invoice> {
 
     // const paymentTimeoutAt = add(invoice.createdAt, { minutes: 20 });
     // FOR_TESTING
-    const paymentTimeoutAt = add(invoice.createdAt, { seconds: 30 });
+    const paymentTimeoutAt = add(invoice.createdAt, { minutes: 1 });
 
     const updatedInvoice = await this.invoiceModel
       .findByIdAndUpdate(
@@ -177,7 +177,7 @@ export class InvoiceService extends ReactAdminCrud<Invoice> {
 
     // const paymentTimeoutAt = add(invoice.createdAt, { minutes: 20 });
     // FOR_TESTING
-    const paymentTimeoutAt = add(invoice.createdAt, { seconds: 30 });
+    const paymentTimeoutAt = add(invoice.createdAt, { minutes: 1 });
 
     const updatedInvoice = await this.invoiceModel
       .findByIdAndUpdate(
@@ -222,8 +222,8 @@ export class InvoiceService extends ReactAdminCrud<Invoice> {
     const driver = await this.driverService.getOne(updatedInvoice.driver._id);
 
     if (updatedInvoice.type === 'BOOKING') {
-      const bookingEndedAt = add(currentTime, { minutes: 10 });
-      // const bookingEndedAt = add(currentTime, { seconds: 20 });
+      // const bookingEndedAt = add(currentTime, { minutes: 10 });
+      const bookingEndedAt = add(currentTime, { minutes: 1 });
 
       await updatedInvoice.booking.updateOne({
         status: 'BOOKED',
@@ -334,7 +334,7 @@ export class InvoiceService extends ReactAdminCrud<Invoice> {
         },
       ]);
     } else if (updatedInvoice.type === 'PARKING') {
-      const parkingPaidEndedAt = add(currentTime, { seconds: 20 });
+      const parkingPaidEndedAt = add(currentTime, { minutes: 1 });
 
       await updatedInvoice.parking.updateOne({
         status: 'PARKED_PAID',
@@ -344,6 +344,106 @@ export class InvoiceService extends ReactAdminCrud<Invoice> {
       await updatedInvoice.activity.slot.updateOne({
         gate: 'OPEN',
       });
+
+      this.lineMessagingService.sendPushMessage(driver.lineUserId, [
+        { type: 'text', text: 'ขอบคุณสำหรับการชำระเงิน' },
+        {
+          type: 'flex',
+          altText: 'daw',
+          contents: {
+            type: 'bubble',
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: 'RECEIPT',
+                  weight: 'bold',
+                  color: '#1DB446',
+                  size: 'sm',
+                },
+                {
+                  type: 'text',
+                  text: 'การจอดรถ',
+                  weight: 'bold',
+                  size: 'xxl',
+                  margin: 'md',
+                },
+                {
+                  type: 'text',
+                  text: `${updatedInvoice.activity.park.name}`,
+                  size: 'xs',
+                  color: '#aaaaaa',
+                  wrap: true,
+                },
+                {
+                  type: 'separator',
+                  margin: 'xxl',
+                },
+                {
+                  type: 'box',
+                  layout: 'vertical',
+                  margin: 'xxl',
+                  spacing: 'sm',
+                  contents: [
+                    {
+                      type: 'box',
+                      layout: 'horizontal',
+                      contents: [
+                        {
+                          type: 'text',
+                          text: 'รวมทั้งหมด',
+                          size: 'sm',
+                          color: '#555555',
+                          flex: 0,
+                        },
+                        {
+                          type: 'text',
+                          text: `${updatedInvoice.totalPrice} บาท`,
+                          size: 'sm',
+                          color: '#111111',
+                          align: 'end',
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  type: 'separator',
+                  margin: 'xxl',
+                },
+                {
+                  type: 'box',
+                  layout: 'horizontal',
+                  margin: 'md',
+                  contents: [
+                    {
+                      type: 'text',
+                      text: 'INVOICE ID',
+                      size: 'xs',
+                      color: '#aaaaaa',
+                      flex: 0,
+                    },
+                    {
+                      type: 'text',
+                      text: updatedInvoice._id,
+                      color: '#aaaaaa',
+                      size: 'xs',
+                      align: 'end',
+                    },
+                  ],
+                },
+              ],
+            },
+            styles: {
+              footer: {
+                separator: true,
+              },
+            },
+          },
+        },
+      ]);
     }
 
     return updatedInvoice;
