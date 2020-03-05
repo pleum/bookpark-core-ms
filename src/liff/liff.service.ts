@@ -162,4 +162,9 @@ export class LiffService {
   async getSlotDetail(slotId: string) {
     return await this.slotService.getOne(slotId);
   }
+
+  async getHistory(lineUserId: string) {
+    const driver = await this.driverService.getDriverByLineUserId(lineUserId);
+    return this.activityService.getHistroy(driver._id);
+  }
 }

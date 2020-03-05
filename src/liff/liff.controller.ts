@@ -14,7 +14,6 @@ import {
 } from './decorators/current-user.decorator';
 import { LiffService } from './liff.service';
 import { RegisterDriverDto } from './dto/register-driver.dto';
-import { get } from 'http';
 
 @Controller('liff')
 @UseGuards(LiffGuard)
@@ -80,5 +79,10 @@ export class LiffController {
   @Get('slots/:id')
   async getSlotDetail(@Param('id') slotId: string) {
     return this.liffService.getSlotDetail(slotId);
+  }
+
+  @Get('history')
+  async getHistory(@CurrentUser() user: LineUserProfile) {
+    return this.liffService.getHistory(user.userId);
   }
 }

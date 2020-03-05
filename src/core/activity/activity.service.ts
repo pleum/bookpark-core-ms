@@ -162,13 +162,24 @@ export class ActivityService {
         })
         .exec();
 
+      const currentTime = new Date();
       await actvity.currentParking
         .updateOne({
+          parkingFinishedAt: currentTime,
           status: 'FINISH',
         })
         .exec();
 
       console.log('finish');
     }
+  }
+
+  async getHistroy(driverId: string): Promise<any> {
+    return this.activityModel
+      .find({ status: 'FINISH', driver: driverId })
+      .populate('park')
+      .populate('currentParking')
+      .lean()
+      .exec();
   }
 }

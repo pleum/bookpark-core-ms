@@ -37,4 +37,7 @@ export const ParkingSchema = new mongoose.Schema({
   parkingEndedAt: {
     type: mongoose.SchemaTypes.Date,
   },
+  parkingFinishedAt: {
+    type: mongoose.SchemaTypes.Date,
+  },
 });
