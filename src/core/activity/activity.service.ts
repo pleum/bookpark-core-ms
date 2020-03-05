@@ -176,7 +176,12 @@ export class ActivityService {
 
   async getHistroy(driverId: string): Promise<any> {
     return this.activityModel
-      .find({ status: 'FINISH', driver: driverId })
+      .find({
+        status: 'FINISH',
+        currentBooking: { $exists: true },
+        currentParking: { $exists: true },
+        driver: driverId,
+      })
       .populate('park')
       .populate('currentParking')
       .lean()
